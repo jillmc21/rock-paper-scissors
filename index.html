@@ -1,85 +1,143 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Rock Paper Scissors</title>
-        <meta charset = "UTF-8">
-    </head>
-    <body>
-        <script>
 
-            //This function gets the play of the computer
-            function computerPlay() {
-                let computerSelection = Math.floor(Math.random()*3);
-                if (computerSelection == 0){
-                    return "rock";
-                } else if (computerSelection == 1){
-                    return "paper";
-                } else {
-                    return "scissors";
-                }
+<head>
+    <title>Rock Paper Scissors</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+
+    <button id="rock" class="choices">Rock</button>
+    <button id="paper" class="choices">Paper</button>
+    <button id="scissors" class="choices">Scissors</button>
+
+    <div class="results">
+        <h1>Results:</h1>
+
+
+    </div>
+
+    <script>
+
+        let computerScore = 0;
+        let userScore = 0;
+
+        function computerPlay() {
+            let computerSelection = Math.floor(Math.random() * 3);
+            if (computerSelection == 0) {
+                return "rock";
+            } else if (computerSelection == 1) {
+                return "paper";
+            } else {
+                return "scissors";
+            }
+        }
+
+        function playRound(e) {
+            const computerSelection = computerPlay();
+
+            const selection = document.querySelector('.results');
+
+            const userSelection = document.createElement('p');
+            userSelection.classList.add('userSelection');
+            userSelection.textContent = "You selected " + this.id;
+            selection.appendChild(userSelection);
+
+            const compSelection = document.createElement('p');
+            compSelection.classList.add('compSelection');
+            compSelection.textContent = "Computer selected " + computerSelection;
+            selection.appendChild(compSelection);
+
+            const result = compare(computerSelection, this.id);
+
+            if (result == "user wins") {
+                userScore++;
+            } else if (result == "comp wins") {
+                computerScore++;
             }
 
-            //This function gets the play of the user
-            function userPlay() {
-                let playerSelection = window.prompt("Rock, Paper, or Scissors?");
-                playerSelection = playerSelection.toLowerCase();
-                while (playerSelection != "rock" && playerSelection != "paper" && playerSelection != "scissors"){
-                    playerSelection = window.prompt("Invalid selection. Please choose rock, paper, or scissors.");
-                    playerSelection = playerSelection.toLowerCase();
-                }
-                return playerSelection;
-            }
-            
-            //This function compares plays of computer and user and returns results
-            function playGame(computerSelection, userSelection) {
-                if (computerSelection === userSelection){
-                    return "Tie!";
-                } else if (computerSelection==="rock" && userSelection==="paper") {
-                    return "You win this round!";
-                } else if (computerSelection==="rock" && userSelection==="scissors") {
-                    return "Computer wins this round!";
-                } else if (computerSelection==="paper" && userSelection==="rock") {
-                    return "Computer wins this round!";
-                } else if (computerSelection==="paper" && userSelection==="scissors") {
-                    return "You win this round!";
-                } else if (computerSelection==="scissors" && userSelection==="paper") {
-                    return "Computer wins this round!";
-                } else if (computerSelection==="scissors" && userSelection==="rock") {
-                    return "You win this round!";
-                }
-            }
-             
-            function game(){
-                let computerScore=0;
-                let userScore=0;
+            const results = document.querySelector('.results');
+            const userPoints = document.createElement('p');
+            userPoints.classList.add('userPoints');
+            userPoints.textContent = "User score: " + userScore;
+            results.appendChild(userPoints);
 
-                for (let i=1; i<=5; i++){
-                    let computerSelection = computerPlay();
-                    let userSelection = userPlay();
-                    console.log(computerSelection);
-                    console.log(userSelection);
-                    let result = playGame(computerSelection, userSelection);
-                    console.log(result);
-                    if (result == "You win this round!") {
-                        userScore++;
-                    } else if (result == "Computer wins this round!") {
-                        computerScore++;
-                    } else {
-                        console.log("No points given this round");
-                    }
-                }
-                if (userScore>computerScore){
-                    console.log("You won the game!")
-                } else if (computerScore>userScore){
-                    console.log("Computer won the game!")
-                } else {
-                    console.log("You tied this game!")
-                }
+            const compPoints = document.createElement('p');
+            compPoints.classList.add('compPoints');
+            compPoints.textContent = "Computer score: " + computerScore;
+            results.appendChild(compPoints);
+
+            if (userScore == 5) {
+                const winner = document.querySelector('.results');
+                const userWins = document.createElement('p');
+                userWins.classList.add('userWins');
+                userWins.textContent = "You reached 5 points first. You win the game!";
+                results.appendChild(userWins);
+                userScore = 0;
+                computerScore = 0;
             }
-            game(); 
+            else if (computerScore == 5) {
+                const winner = document.querySelector('.results');
+                const compWins = document.createElement('p');
+                compWins.classList.add('compWins');
+                compWins.textContent = "Computer reached 5 points first. Computer wins the game!";
+                results.appendChild(compWins);
+                userScore = 0;
+                computerScore = 0;
+            }
+        }
 
-            
 
-        </script>
-    </body>
+
+
+        function compare(computerSelection, userSelection) {
+
+            const results = document.querySelector('.results');
+
+
+            if (computerSelection === userSelection) {
+
+                const tie = document.createElement('p');
+                tie.classList.add('tie');
+                tie.textContent = "This round is a tie";
+                results.appendChild(tie);
+                return "tie";
+
+
+            } else if ((computerSelection === "rock" && userSelection === "paper") ||
+                (computerSelection === "scissors" && userSelection === "rock") ||
+                (computerSelection === "paper" && userSelection === "scissors")) {
+
+                const userWins = document.createElement('p');
+                userWins.classList.add('userWins');
+                userWins.textContent = "You win this round!";
+                results.appendChild(userWins);
+                return "user wins";
+
+
+            } else if ((computerSelection === "rock" && userSelection === "scissors") ||
+                (computerSelection === "paper" && userSelection === "rock") ||
+                (computerSelection === "scissors" && userSelection === "paper")) {
+
+                const compWins = document.createElement('p');
+                compWins.classList.add('compWins');
+                compWins.textContent = "Computer wins this round!";
+                results.appendChild(compWins);
+                return "comp wins";
+
+            }
+        }
+
+
+
+        const buttons = document.querySelectorAll(`.choices`);
+        buttons.forEach(button => button.addEventListener('click', playRound));
+
+       
+
+    </script>
+
+</body>
+
 </html>
